@@ -68,6 +68,7 @@ const MainEvent = ({ events }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [editUploading, setEditUploading] = useState(false);
 
   const router = useRouter();
 
@@ -90,7 +91,79 @@ const MainEvent = ({ events }) => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = () => {
+  const handleEditChange = (e) => {
+    setEditEvent({ ...editEvent, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveEdit = async () => {
+    if (
+      !editEvent.title ||
+      !editEvent.shortDesc ||
+      !editEvent.content ||
+      !editEvent.date
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    setEditUploading(true);
+
+    // Prepare data for update
+    const updateData = {
+      id: editEvent._id,
+      title: editEvent.title,
+      shortDesc: editEvent.shortDesc,
+      content: editEvent.content,
+      date: editEvent.date,
+      link: editEvent.link,
+    };
+
+    // If there are new images, upload them
+    if (editEvent.banner && typeof editEvent.banner !== "string") {
+      const bannerImage = await uploadImage(editEvent.banner);
+      if (!bannerImage) {
+        alert("Failed to upload banner image");
+        setEditUploading(false);
+        return;
+      }
+      updateData.banner = bannerImage;
+    }
+
+    if (editEvent.thumbnail && typeof editEvent.thumbnail !== "string") {
+      const thumbnailImage = await uploadImage(editEvent.thumbnail);
+      if (!thumbnailImage) {
+        alert("Failed to upload thumbnail image");
+        setEditUploading(false);
+        return;
+      }
+      updateData.thumbnail = thumbnailImage;
+    }
+
+    // Update event through API
+    const res = await fetch(`/api/events/${editEvent._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    if (!res.ok) {
+      alert("Failed to update event");
+      setEditUploading(false);
+      return;
+    }
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+      alert("Event updated successfully");
+      router.refresh();
+    } else {
+      alert("Failed to update event: " + data.message);
+    }
+
+    setEditUploading(false);
     setIsEditModalOpen(false);
   };
 
@@ -216,35 +289,109 @@ const MainEvent = ({ events }) => {
         onClose={() => setIsEditModalOpen(false)}
         title="Edit Event"
       >
-        <Label>Title</Label>
-        <Input name="title" value={editEvent?.title} onChange={handleChange} />
-        <Label>Short Description</Label>
-        <Textarea
-          name="shortDesc"
-          value={editEvent?.shortDesc}
-          onChange={handleChange}
-        />
-        <Label>Content</Label>
-        <Textarea
-          name="content"
-          value={editEvent?.content}
-          onChange={handleChange}
-        />
-        <Label>Date</Label>
-        <Input
-          type="date"
-          name="date"
-          value={new Date(editEvent?.date).toISOString().split("T")[0]}
-          onChange={handleChange}
-        />
+        {(!editUploading && (
+          <div className="flex flex-col">
+            <Label>Title</Label>
+            <Input
+              name="title"
+              value={editEvent?.title}
+              onChange={handleEditChange}
+            />
+            <Label>Short Description</Label>
+            <Textarea
+              name="shortDesc"
+              value={editEvent?.shortDesc}
+              onChange={handleEditChange}
+            />
+            <Label>Content</Label>
+            <Textarea
+              name="content"
+              value={editEvent?.content}
+              onChange={handleEditChange}
+            />
+            <Label>Date</Label>
+            <Input
+              type="date"
+              name="date"
+              value={new Date(editEvent?.date).toISOString().split("T")[0]}
+              onChange={handleEditChange}
+            />
 
-        <Label>Link</Label>
-        <Input name="link" value={editEvent?.link} onChange={handleChange} />
+            <Label>Link</Label>
+            <Input
+              name="link"
+              value={editEvent?.link}
+              onChange={handleEditChange}
+            />
 
-        <div className="mt-4 flex justify-between">
-          <Button onClick={handleSaveEdit}>Save</Button>
-          <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
-        </div>
+            <Label>Thumbnail Image</Label>
+            {(editEvent.thumbnail && (
+              <div className="flex relative w-full h-40 rounded overflow-hidden">
+                <button
+                  className="absolute top-0 right-0 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 duration-200"
+                  onClick={() =>
+                    setEditEvent({ ...editEvent, thumbnail: "" })
+                  }
+                >
+                  X
+                </button>
+                <img
+                  src={
+                    typeof editEvent.thumbnail === "string"
+                      ? editEvent.thumbnail
+                      : URL.createObjectURL(editEvent.thumbnail)
+                  }
+                  alt="Thumbnail"
+                  className="w-40  object-contain rounded"
+                />
+              </div>
+            )) || (
+              <Input
+                type="file"
+                onChange={(e) =>
+                  setEditEvent({
+                    ...editEvent,
+                    thumbnail: e.target.files[0],
+                  })
+                }
+              />
+            )}
+            <Label>Banner URL</Label>
+            {(editEvent.banner && (
+              <div className="relative rounded ">
+                <img
+                  src={
+                    typeof editEvent.banner === "string"
+                      ? editEvent.banner
+                      : URL.createObjectURL(editEvent.banner)
+                  }
+                  alt="Banner"
+                  className="w-full h-40 object-cover rounded"
+                />
+                <button
+                  className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 duration-200"
+                  onClick={() => setEditEvent({ ...editEvent, banner: "" })}
+                >
+                  X
+                </button>
+              </div>
+            )) || (
+              <Input
+                type="file"
+                onChange={(e) =>
+                  setEditEvent({
+                    ...editEvent,
+                    banner: e.target.files[0],
+                  })
+                }
+              />
+            )}
+            <div className="mt-4 flex justify-between">
+              <Button onClick={handleSaveEdit}>Save</Button>
+              <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
+            </div>
+          </div>
+        )) || <div className="text-center">Uploading...</div>}
       </Modal>
 
       {/* Create Event Modal */}
