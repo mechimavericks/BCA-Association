@@ -356,7 +356,7 @@ const MainEvent = ({ events }) => {
                 }
               />
             )}
-            <Label>Banner URL</Label>
+            <Label>Banner</Label>
             {(editEvent.banner && (
               <div className="relative rounded ">
                 <img
@@ -454,7 +454,7 @@ const MainEvent = ({ events }) => {
                 }
               />
             )}
-            <Label>Banner URL</Label>
+            <Label>Banner</Label>
             {(newEvent.banner && (
               <div className="relative rounded ">
                 <img
