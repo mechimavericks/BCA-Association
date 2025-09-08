@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import slick-carousel CSS */
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+.backdrop-blur-md {
+  backdrop-filter: blur(14px); /* Adjust the blur radius as needed */
+}
+nav {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.5
+  ) !important; /* Darker transparent background to fade colors */
+}
+html {
+  scroll-behavior: smooth;
+}
+
+.goodScroll::-webkit-scrollbar {
+  width: 10px;
+}
+.goodScroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 0, 0, 0.178);
+  border-radius: 10px;
+}
+.goodScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.goodScroll::-webkit-scrollbar-thumb:hover {
+  background: #5555554b;
+}
+
+.glowing-bg {
+  animation: tilt 5s infinite;
+}
+
+@keyframes tilt {
+  0%,
+  50%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.5deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
+}
