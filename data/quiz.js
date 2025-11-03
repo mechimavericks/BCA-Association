@@ -597,8 +597,8 @@ const quiz = [
     "id": 80,
     "type": "math",
     "question": "What is the number of seconds in 13 hour?",
-    "options": ["1200 sec", "2400 sec", "3600 sec", "4800 sec"],
-    "answer": "4800 sec"
+    "options": ["46800 sec", "24000 sec", "36300 sec", "48200 sec"],
+    "answer": "46800 sec"
   },
   {
     "id": 81,
