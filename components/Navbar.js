@@ -72,6 +72,13 @@ const Navbar = () => {
             >
               Contacts
             </Link>
+              <Link
+              href="/admin/attendance"
+              className="text-blue-800 font-semibold hover:text-blue-600 transition duration-200"
+              onClick={handleLinkClick}
+            >
+              Attendance
+            </Link>
           </div>
 
           {/* Social Media Links */}
