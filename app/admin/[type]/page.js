@@ -1,6 +1,8 @@
 import MainEvents from "@/components/admin/events/MainEvents";
 import TicketMain from "@/components/admin/tickets/TicketMain";
 import ContactMain from "@/components/admin/contacts/ContactMain";
+import AttendanceMain from "@/components/admin/attendance/AttendanceMain";
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -55,7 +57,7 @@ async function page({ params }) {
     return <div>Failed to fetch contacts data</div>;
   }
 
-  const option = ["events", "tickets", "contacts"];
+  const option = ["events", "tickets", "contacts", "attendance"];
   if (!option.includes(type)) {
     console.log("type", type);
     return (
@@ -91,6 +93,10 @@ async function page({ params }) {
     if (type === "contacts") {
       return <ContactMain contacts={contacts.data} />;
     }
+
+    if (type === "attendance") {
+    return <AttendanceMain />;
+  }
   };
 
   return (
