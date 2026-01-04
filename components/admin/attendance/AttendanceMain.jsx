@@ -10,7 +10,7 @@ export default function AdminAttendanceControl() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch('app/api/attendance/session')
+    fetch('/app/api/attendance/session')
       .then(res => res.json())
       .then(data => {
         setEvent(data);
@@ -23,7 +23,7 @@ export default function AdminAttendanceControl() {
     setMsg('');
     
     try {
-      const res = await fetch('app/api/attendance/session', {
+      const res = await fetch('/app/api/attendance/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active, name })
