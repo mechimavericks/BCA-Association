@@ -5,7 +5,7 @@ const studentsPath = path.join(process.cwd(), 'data/students.json');
 const sessionPath = path.join(process.cwd(), 'data/session.json');
 
 const GOOGLE_SHEET_URL =
-  'https://script.google.com/macros/s/AKfycbxPpTsEjSyF9wlUURCTnSSrPAdDknm-p8TD-20eE2r-Fet2YPnV77rHl_wQznKHNzrb/exec';
+  'https://script.google.com/macros/s/AKfycbxJhH9ciHXhCw4OvnYcU0ZEdmxa2_c9AzeXyD5YRyBPGux7akigm57cS6CfQMrdAvkb/exec';
 
 export async function POST(req) {
   try {
